@@ -1,9 +1,14 @@
 type WaveformProps = {
   frequency?: number;
   amplitude?: number;
+  phase?: number;
 };
 
-function Waveform({ frequency = 440, amplitude = 0.72 }: WaveformProps) {
+function Waveform({
+  frequency = 440,
+  amplitude = 0.72,
+  phase = 0,
+}: WaveformProps) {
   const width = 1000;
   const height = 160;
   const centerY = height / 2;
@@ -14,9 +19,13 @@ function Waveform({ frequency = 440, amplitude = 0.72 }: WaveformProps) {
 
   for (let x = 0; x <= width; x += 2) {
     const t = (x / width) * duration;
+    const phaseRadians = (phase * Math.PI) / 180;
 
     const y =
-      centerY - amplitude * centerY * Math.sin(2 * Math.PI * frequency * t);
+      centerY -
+      amplitude *
+        centerY *
+        Math.sin(2 * Math.PI * frequency * t + phaseRadians);
 
     points.push(`${x},${y}`);
   }
@@ -32,16 +41,19 @@ function Waveform({ frequency = 440, amplitude = 0.72 }: WaveformProps) {
       </svg>
 
       <div className="waveform-readout">
-        <span>
-          FREQUENCY <strong>{frequency.toFixed(2)} Hz</strong>
+        <span className="readout-field">
+          <span className="readout-label">FREQUENCY</span>
+          <strong>{frequency.toFixed(2)} Hz</strong>
         </span>
 
-        <span>
-          AMPLITUDE <strong>{amplitude.toFixed(2)}</strong>
+        <span className="readout-field">
+          <span className="readout-label">AMPLITUDE</span>
+          <strong>{amplitude.toFixed(2)}</strong>
         </span>
 
-        <span>
-          PHASE <strong>0.00°</strong>
+        <span className="readout-field">
+          <span className="readout-label">PHASE</span>
+          <strong>{phase.toFixed(2)}°</strong>
         </span>
       </div>
     </div>

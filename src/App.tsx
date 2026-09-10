@@ -1,56 +1,113 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./App.css";
 import Waveform from "./Waveform";
+import Systems from "./sections/Systems";
 
 function App() {
   const [frequency, setFrequency] = useState(400);
+  const [amplitude, setAmplitude] = useState(0.72);
+  const [phase, setPhase] = useState(0);
+
+  const [isDragging, setIsDragging] = useState(false);
+
+  const previousMouseX = useRef<number | null>(null);
+
   return (
-    <main className="hero">
-      <header className="site-header">
-        <a className="monogram" href="/">
-          JD
-        </a>
+    <>
+      <main className="hero">
+        <header className="site-header">
+          <a className="monogram" href="/">
+            JD
+          </a>
 
-        <nav className="navigation">
-          <a href="#work">WORK</a>
-          <a href="#about">ABOUT</a>
-          <a href="#resume">RESUME</a>
-        </nav>
-      </header>
+          <nav className="navigation">
+            <a href="#work">WORK</a>
+            <a href="#about">ABOUT</a>
+            <a href="#resume">RESUME</a>
+          </nav>
+        </header>
 
-      <section className="hero-content">
-        <p className="eyebrow">SOFTWARE / SYSTEMS / AUDIO</p>
+        <section className="hero-content">
+          <p className="eyebrow">SOFTWARE / SYSTEMS / AUDIO</p>
 
-        <h1>JUSTIN DINGEMAN</h1>
+          <h1>JUSTIN DINGEMAN</h1>
 
-        <div
-          className="waveform-placeholder"
-          onMouseMove={(event) => {
-            const rect = event.currentTarget.getBoundingClientRect();
+          <div
+            className={`waveform-placeholder ${
+              isDragging ? "is-dragging" : ""
+            }`}
+            onPointerDown={(event) => {
+              event.currentTarget.setPointerCapture(event.pointerId);
 
-            const position = (event.clientX - rect.left) / rect.width;
+              setIsDragging(true);
+              previousMouseX.current = event.clientX;
+            }}
+            onPointerUp={(event) => {
+              event.currentTarget.releasePointerCapture(event.pointerId);
 
-            const clampedPosition = Math.max(0, Math.min(1, position));
+              setIsDragging(false);
+              previousMouseX.current = null;
+            }}
+            onPointerMove={(event) => {
+              if (isDragging) {
+                const previousX = previousMouseX.current;
 
-            const newFrequency = 100 + clampedPosition * 900;
+                if (previousX !== null) {
+                  const deltaX = event.clientX - previousX;
 
-            setFrequency(newFrequency);
-          }}
-        >
-          <Waveform frequency={frequency} />
-        </div>
+                  setPhase((currentPhase) => {
+                    const newPhase = currentPhase + deltaX * 2;
 
-        <a className="explore" href="#explore">
-          <span>EXPLORE</span>
-          <span className="arrow">↓</span>
-        </a>
-      </section>
+                    return ((newPhase % 360) + 360) % 360;
+                  });
+                }
 
-      <footer className="hero-footer">
-        <span>SIGNAL</span>
-        <span>01 / 04</span>
-      </footer>
-    </main>
+                previousMouseX.current = event.clientX;
+
+                return;
+              }
+
+              const rect = event.currentTarget.getBoundingClientRect();
+
+              const x = (event.clientX - rect.left) / rect.width;
+              const y = (event.clientY - rect.top) / rect.height;
+
+              const clampedX = Math.max(0, Math.min(1, x));
+              const clampedY = Math.max(0, Math.min(1, y));
+
+              const newFrequency = 100 + clampedX * 900;
+              const newAmplitude = 1 - clampedY;
+
+              setFrequency(newFrequency);
+              setAmplitude(newAmplitude);
+            }}
+            onPointerCancel={(event) => {
+              event.currentTarget.releasePointerCapture(event.pointerId);
+
+              setIsDragging(false);
+              previousMouseX.current = null;
+            }}
+          >
+            <Waveform
+              frequency={frequency}
+              amplitude={amplitude}
+              phase={phase}
+            />
+          </div>
+
+          <a className="explore" href="#explore">
+            <span>EXPLORE</span>
+            <span className="arrow">↓</span>
+          </a>
+        </section>
+
+        <footer className="hero-footer">
+          <span>SIGNAL</span>
+          <span>01 / 04</span>
+        </footer>
+      </main>
+      <Systems />
+    </>
   );
 }
 

@@ -104,6 +104,7 @@ h1 {
   margin-bottom: 48px;
 
   cursor: crosshair;
+  touch-action: none;
 }
 
 .waveform-placeholder svg {
@@ -118,6 +119,11 @@ h1 {
   vector-effect: non-scaling-stroke;
 
   opacity: 0.7;
+}
+
+.waveform-placeholder.is-dragging {
+  user-select: none;
+  cursor: grabbing;
 }
 
 .waveform {
@@ -141,6 +147,20 @@ h1 {
 .waveform-readout strong {
   font-weight: 400;
   opacity: 1;
+}
+
+.readout-field {
+  display: inline-grid;
+  grid-template-columns: 90px;
+}
+
+.readout-label {
+  text-align: left;
+}
+
+.readout-field strong {
+  text-align: right;
+  font-weight: 400;
 }
 
 .explore {
@@ -179,7 +199,235 @@ h1 {
   opacity: 0.35;
 }
 
+.systems {
+  position: relative;
+  min-height: 100vh;
+  padding: 120px 40px;
+  background: #111210;
+  overflow: hidden;
+}
+
+.section-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  opacity: 0.35;
+}
+
+.systems-intro {
+  max-width: 900px;
+  margin: 100px auto 0;
+}
+
+.section-eyebrow {
+  margin: 0 0 18px;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  opacity: 0.45;
+}
+
+.systems h2 {
+  margin: 0;
+  font-size: clamp(2.5rem, 6vw, 5.5rem);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+.systems-description {
+  max-width: 500px;
+  margin: 32px 0 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0.55;
+}
+
+.system-flow {
+  max-width: 900px;
+  margin: 120px auto 0;
+}
+
+.flow-node {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 220px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.flow-node strong {
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+}
+
+.flow-node > span:last-child {
+  font-family: monospace;
+  font-size: 0.55rem;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  opacity: 0.4;
+}
+
+.flow-index {
+  font-family: monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  opacity: 0.35;
+}
+
+.flow-input,
+.flow-process,
+.flow-output {
+  margin-inline: auto;
+}
+
+.flow-line {
+  width: 1px;
+  height: 60px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.flow-split {
+  position: relative;
+  margin-top: 60px;
+}
+
+.flow-split::before {
+  content: "";
+
+  position: absolute;
+  top: -60px;
+  left: 50%;
+
+  width: 1px;
+  height: 60px;
+
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.flow-split-line {
+  position: absolute;
+  top: 0;
+  left: 25%;
+  right: 25%;
+
+  height: 1px;
+
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.flow-branches {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  padding-top: 60px;
+}
+
+.flow-branch {
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+}
+
+.flow-branch::before {
+  content: "";
+
+  position: absolute;
+  top: -60px;
+  left: 50%;
+
+  width: 1px;
+  height: 60px;
+
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.flow-branch::after {
+  content: "";
+
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+
+  width: 1px;
+  height: 60px;
+
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.flow-branch .flow-node {
+  width: 220px;
+}
+
+.flow-merge-line {
+  position: relative;
+  height: 120px;
+}
+
+.flow-merge-line::before {
+  content: "";
+
+  position: absolute;
+  top: 60px;
+  left: 25%;
+  right: 25%;
+
+  height: 1px;
+
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.flow-merge-line::after {
+  content: "";
+
+  position: absolute;
+  top: 60px;
+  left: 50%;
+
+  width: 1px;
+  height: 60px;
+
+  background: rgba(255, 255, 255, 0.2);
+
+  transform: translateX(-50%);
+}
+
+.flow-output-line {
+  display: none;
+}
+
 @media (max-width: 600px) {
+  .systems {
+    padding: 80px 22px;
+  }
+
+  .systems-intro {
+    margin-top: 70px;
+  }
+
+  .system-flow {
+    margin-top: 80px;
+  }
+
+  .flow-branches {
+    grid-template-columns: 1fr;
+  }
+
+  .flow-branch:first-child {
+    border-right: none;
+  }
+
+  .flow-branch .flow-node {
+    width: 100%;
+  }
+
   .hero {
     padding: 22px;
   }
