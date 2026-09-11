@@ -1,7 +1,9 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import Waveform from "./Waveform";
 import Systems from "./sections/Systems";
+import Work from "./sections/Work";
+import VendorPlatform from "./sections/VendorPlatform";
 
 function App() {
   const [frequency, setFrequency] = useState(400);
@@ -11,6 +13,30 @@ function App() {
   const [isDragging, setIsDragging] = useState(false);
 
   const previousMouseX = useRef<number | null>(null);
+
+  const [route, setRoute] = useState(window.location.hash);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setRoute(window.location.hash);
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (route === "#project/vendor-platform") {
+      window.scrollTo(0, 0);
+    }
+  }, [route]);
+
+  if (route === "#project/vendor-platform") {
+    return <VendorPlatform />;
+  }
 
   return (
     <>
@@ -107,6 +133,8 @@ function App() {
         </footer>
       </main>
       <Systems />
+
+      <Work />
     </>
   );
 }
