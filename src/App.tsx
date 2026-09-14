@@ -49,7 +49,9 @@ function App() {
           <nav className="navigation">
             <a href="#work">WORK</a>
             <a href="#about">ABOUT</a>
-            <a href="#resume">RESUME</a>
+            <a href="/Resume_Justin Dingeman.pdf" download>
+              RESUME
+            </a>
           </nav>
         </header>
 
